@@ -23,6 +23,8 @@ include_once("kindeditor.php") ;
 <td width="100"></td>
 </center>
 <hr>
+
+
 <?php if(isset($_GET['id'])){
 ;//	require_once("../include/check_get_key.php");
 ?>
@@ -32,6 +34,7 @@ include_once("kindeditor.php") ;
 <?php $sql="SELECT * FROM `problem` WHERE `problem_id`=?";
 $result=pdo_query($sql,intval($_GET['id']));
  $row=$result[0];
+ $source_from_file  = readspjsource($row['problem_id'], 'spj.cc', '', $OJ_DATA);
 ?>
 <p>Problem Id: <?php echo $row['problem_id']?></p>
 <input type=hidden name=problem_id value='<?php echo $row['problem_id']?>'>
@@ -50,12 +53,15 @@ $result=pdo_query($sql,intval($_GET['id']));
 <p>SpecialJudge: 
 N<input type=radio name=spj value='0' <?php echo $row['spj']=="0"?"checked":""?>>
 Y<input type=radio name=spj value='1' <?php echo $row['spj']=="1"?"checked":""?>></p>
-<p>Source:<br><textarea name=source rows=1 cols=70><?php echo htmlentities($row['source'],ENT_QUOTES,"UTF-8")?></textarea></p>
+<p>Source:<br><textarea name=source rows=13 cols=120 ><?php echo $source_from_file ;?></textarea></p>
 <div align=center>
+
+
 <?php require_once("../include/set_post_key.php");?>
 <input type=submit value=Submit name=submit>
 </div></form>
 <p>
+
 
 <?php }else{
 require_once("../include/check_post_key.php");
@@ -89,6 +95,7 @@ if (get_magic_quotes_gpc ()) {
 	$source = stripslashes ( $source );
 }
 
+
 $basedir=$OJ_DATA."/$id";
 
 if(strlen($source)) mkspjsource($id, "spj.cc", $source, $OJ_DATA);
@@ -120,6 +127,8 @@ echo "Edit OK!";
 echo "<a href='../problem.php?id=$id'>See The Problem!</a>";
 }
 ?>
+
+
 </body>
 </html>
 

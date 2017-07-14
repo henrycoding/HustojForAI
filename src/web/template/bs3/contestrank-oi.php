@@ -29,7 +29,7 @@
 $rank=1;
 ?>
 <center><h3>OI Mode RankList -- <?php echo $title?></h3>
-<a href="contestrank.xls.php?cid=<?php echo $cid?>" >Download</a>
+<a href="oicontestrank.xls.php?cid=<?php echo $cid?>" >Download</a>
 <?php
 if($OJ_MEMCACHE){
   ?>
@@ -81,15 +81,14 @@ $bg_color="ff$aa$aa";
 }
 echo "<td class=well style='background-color:#$bg_color'>";
 if(isset($U[$i])){
-if (isset($U[$i]->p_ac_sec[$j])&&$U[$i]->p_ac_sec[$j]>0){
+/*if (isset($U[$i]->p_ac_sec[$j])&&$U[$i]->p_ac_sec[$j]>0){
 echo "正确 ";
 echo sec2str($U[$i]->p_ac_sec[$j]);
-}
-if (isset($U[$i]->p_wa_num[$j])&&$U[$i]->p_wa_num[$j]>0){
-echo "错误 ";
-echo "(+"+$U[$i]->p_pass_rate[$j]*100+")";
-echo "%";
-}
+}*/
+//if (isset($U[$i]->p_wa_num[$j])&&$U[$i]->p_wa_num[$j]>0){
+echo "得分 ";
+echo "(+"+(1-$U[$i]->p_pass_rate[$j])*100+")";
+//}
 }
 }
 echo "</tr>\n";

@@ -54,8 +54,17 @@ function mkspjsource($pid,$filename,$input,$OJ_DATA){
 		fclose ( $fp );
 	}else{
 		echo "Error while opening".$basedir . "/$filename ,try [chgrp -R www-data $OJ_DATA] and [chmod -R 771 $OJ_DATA ] ";
-		
 	}
+}
+
+function readspjsource($pid,$filename,$input,$OJ_DATA){
+	$basedir = "$OJ_DATA/$pid";
+	if(file_exists( $basedir . "/$filename")){
+		echo  $basedir . "/$filename";
+		$str = file_get_contents( $basedir . "/$filename");//将整个文件内容读入到一个字符串中
+		return $str;
+	}
+	return '';
 }
 
 ?>

@@ -175,7 +175,6 @@ $U=array();
 for ($i=0;$i<$rows_cnt;$i++){
         
         $row=$result[$i];
-      
 
         $n_user=$row['user_id'];
         if (strcmp($user_name,$n_user)){
