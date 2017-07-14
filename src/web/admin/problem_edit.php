@@ -6,6 +6,7 @@
 <body>
 <center>
 <?php require_once("../include/db_info.inc.php");?>
+<?php require_once("../include/problem.php") ?>
 <?php require_once("admin-header.php");
 
 if (!(isset($_SESSION['administrator'])
@@ -87,7 +88,11 @@ if (get_magic_quotes_gpc ()) {
 	$spj = stripslashes ( $spj);
 	$source = stripslashes ( $source );
 }
+
 $basedir=$OJ_DATA."/$id";
+
+if(strlen($source)) mkspjsource($id, "spj.cc", $source, $OJ_DATA);
+
 echo "Sample data file in $basedir Updated!<br>";
 
 	if($sample_input&&file_exists($basedir."/sample.in")){
@@ -107,7 +112,7 @@ $sql="UPDATE `problem` set `title`=?,`time_limit`=?,`memory_limit`=?,
 	`description`=?,`input`=?,`output`=?,`sample_input`=?,`sample_output`=?,`hint`=?,`source`=?,`spj`=?,`in_date`=NOW()
 	WHERE `problem_id`=?";
 
-@pdo_query($sql,$title,$time_limit,$memory_limit,$description,$input,$output,$sample_input,$sample_output,$hint,$source,$spj,$id) ;
+@pdo_query($sql,$title,$time_limit,$memory_limit,$description,$input,$output,$sample_input,$sample_output,$hint,'',$spj,$id) ;
 echo "Edit OK!";
 
 

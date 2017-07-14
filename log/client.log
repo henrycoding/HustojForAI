@@ -548,3 +548,132 @@ and recompile judge_client.
 if you are admin and you don't know what to do ,
 chinese explaination can be found on https://zhuanlan.zhihu.com/p/24498599
 
+init_call_counter:1
+init_call_counter:1
+result=6
+init_call_counter:1
+init_call_counter:1
+result=6
+init_call_counter:1
+init_call_counter:1
+result=6
+init_call_counter:1
+init_call_counter:1
+result=6
+init_call_counter:1
+init_call_counter:1
+result=6
+[ERROR] A Not allowed system call: runid:1133 CALLID:1
+ TO FIX THIS , ask admin to add the CALLID into corresponding LANG_XXV[] located at okcalls32/64.h ,
+and recompile judge_client. 
+if you are admin and you don't know what to do ,
+chinese explaination can be found on https://zhuanlan.zhihu.com/p/24498599
+
+[ERROR] A Not allowed system call: runid:1133 CALLID:1
+ TO FIX THIS , ask admin to add the CALLID into corresponding LANG_XXV[] located at okcalls32/64.h ,
+and recompile judge_client. 
+if you are admin and you don't know what to do ,
+chinese explaination can be found on https://zhuanlan.zhihu.com/p/24498599
+
+init_call_counter:1
+init_call_counter:1
+result=6
+init_call_counter:1
+init_call_counter:1
+result=6
+init_call_counter:1
+init_call_counter:1
+result=6
+init_call_counter:1
+init_call_counter:1
+result=6
+init_call_counter:1
+init_call_counter:1
+result=6
+init_call_counter:1
+init_call_counter:1
+result=6
+init_call_counter:1
+init_call_counter:1
+result=6
+init_call_counter:1
+init_call_counter:1
+result=6
+init_call_counter:1
+init_call_counter:1
+result=6
+init_call_counter:1
+init_call_counter:1
+result=4
+init_call_counter:1
+init_call_counter:1
+result=4
+init_call_counter:1
+init_call_counter:1
+result=4
+init_call_counter:1
+init_call_counter:1
+result=4
+init_call_counter:1
+init_call_counter:1
+result=4
+init_call_counter:1
+init_call_counter:1
+result=4
+init_call_counter:1
+init_call_counter:1
+result=4
+init_call_counter:1
+init_call_counter:1
+result=6
+init_call_counter:1
+init_call_counter:1
+result=6
+init_call_counter:1
+init_call_counter:1
+result=6
+init_call_counter:1
+init_call_counter:1
+result=6
+init_call_counter:1
+init_call_counter:1
+result=6
+init_call_counter:1
+init_call_counter:1
+result=6
+init_call_counter:1
+init_call_counter:1
+result=6
+init_call_counter:1
+init_call_counter:1
+result=6
+init_call_counter:1
+init_call_counter:1
+result=6
+init_call_counter:1
+init_call_counter:1
+result=6
+init_call_counter:1
+init_call_counter:1
+result=6
+[ERROR] A Not allowed system call: runid:1133 CALLID:1
+ TO FIX THIS , ask admin to add the CALLID into corresponding LANG_XXV[] located at okcalls32/64.h ,
+and recompile judge_client. 
+if you are admin and you don't know what to do ,
+chinese explaination can be found on https://zhuanlan.zhihu.com/p/24498599
+
+[ERROR] A Not allowed system call: runid:1133 CALLID:1
+ TO FIX THIS , ask admin to add the CALLID into corresponding LANG_XXV[] located at okcalls32/64.h ,
+and recompile judge_client. 
+if you are admin and you don't know what to do ,
+chinese explaination can be found on https://zhuanlan.zhihu.com/p/24498599
+
+init_call_counter:1
+init_call_counter:1
+result=6
+init_call_counter:1
+init_call_counter:1
+result=6
+init_call_counter:1
+init_call_counter:1
+result=4

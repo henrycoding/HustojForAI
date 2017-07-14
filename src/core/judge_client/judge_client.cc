@@ -48,6 +48,7 @@
 #include <mysql/mysql.h>
 #include <assert.h>
 #include "okcalls.h"
+#include "math.h"
 
 #define STD_MB 1048576
 #define STD_T_LIM 2
@@ -1788,6 +1789,7 @@ int special_judge(char* oj_home, int problem_id, char *infile, char *outfile,
 	printf("pid=%d\n", problem_id);
 	pid = fork();
 	int ret = 0;
+	int score = 0;
 	if (pid == 0) {
 
 		while (setgid(1536) != 0)
@@ -1809,31 +1811,30 @@ int special_judge(char* oj_home, int problem_id, char *infile, char *outfile,
 		LIM.rlim_max = STD_F_LIM + STD_MB;
 		LIM.rlim_cur = STD_F_LIM;
 		setrlimit(RLIMIT_FSIZE, &LIM);
-
+		freopen("spj.txt", "w", stdout);
 		ret = execute_cmd("%s/data/%d/spj %s %s %s", oj_home, problem_id,
 				infile, outfile, userfile);
-		if (DEBUG)
-			printf("spj1=%d\n", ret);
-		if (ret)
-			exit(1);
-		else
-			exit(0);
-	} else {
-		int status;
 
+		exit(0);
+	} else {  
+		int status;
 		waitpid(pid, &status, 0);
-		ret = WEXITSTATUS(status);
+		FILE* file = fopen("spj.txt","r");
+
+		fscanf(file,"%d" ,&score);
 		if (DEBUG)
-			printf("spj2=%d\n", ret);
+			printf("spj2=%d, score = %d\n", ret, score);
 	}
-	return ret;
+	return score;
 
 }
-void judge_solution(int & ACflg, int & usedtime, int time_lmt, int isspj,
+int judge_solution(int & ACflg, int & usedtime, int time_lmt, int isspj,
 		int p_id, char * infile, char * outfile, char * userfile, int & PEflg,
 		int lang, char * work_dir, int & topmemory, int mem_lmt,
 		int solution_id, int num_of_test) {
 	//usedtime-=1000;
+	int score = 0;
+
 	int comp_res;
 	if (!oi_mode)
 		num_of_test = 1.0;
@@ -1845,13 +1846,13 @@ void judge_solution(int & ACflg, int & usedtime, int time_lmt, int isspj,
 	// compare
 	if (ACflg == OJ_AC) {
 		if (isspj) {
-			comp_res = special_judge(oj_home, p_id, infile, outfile, userfile);
+			score += (special_judge(oj_home, p_id, infile, outfile, userfile));
 
-			if (comp_res == 0)
+			if (fabs(score - 100) < 1e-6)
 				comp_res = OJ_AC;
 			else {
 				if (DEBUG)
-					printf("fail test %s\n", infile);
+					printf("fail test %s, score = %d\n", infile, score);
 				comp_res = OJ_WA;
 			}
 
@@ -1885,6 +1886,8 @@ void judge_solution(int & ACflg, int & usedtime, int time_lmt, int isspj,
 	if (lang == 6) {
 		comp_res = fix_python_mis_judge(work_dir, ACflg, topmemory, mem_lmt);
 	}
+
+	return score;
 }
 
 int get_page_fault_mem(struct rusage & ruse, pid_t & pidApp) {
@@ -2199,22 +2202,26 @@ int get_test_file(char* work_dir, int p_id) {
 
 		if (access(localfile, 0) == -1 || local_date < remote_date) {
 
-			if (strcmp(filename, "spj") == 0)
-				continue;
+			//if (strcmp(filename, "spj") == 0)
+			//	continue;
 			execute_cmd("/bin/mkdir -p %s/data/%d", oj_home, p_id);
 			const char * cmd2 =
 					" wget --post-data=\"gettestdata=1&filename=%d/%s\" --load-cookies=cookie --save-cookies=cookie --keep-session-cookies -q -O \"%s\"  \"%s/admin/problem_judge.php\"";
 			execute_cmd(cmd2, p_id, filename, localfile, http_baseurl);
 			ret++;
 
+
+			/* MUST BE SPJ.CC
 			if (strcmp(filename, "spj.c") == 0) {
 				//   sprintf(localfile,"%s/data/%d/spj.c",oj_home,p_id);
 				if (access(localfile, 0) == 0) {
+
 					const char * cmd3 = "gcc -o %s/data/%d/spj %s/data/%d/spj.c";
 					execute_cmd(cmd3, oj_home, p_id, oj_home, p_id);
 				}
 			}
-			
+			*/
+
 			if (strcmp(filename, "spj.cc") == 0) {
 				//     sprintf(localfile,"%s/data/%d/spj.cc",oj_home,p_id);
 				if (access(localfile, 0) == 0) {
@@ -2259,6 +2266,9 @@ int main(int argc, char** argv) {
 	int p_id, time_lmt, mem_lmt, lang, isspj, sim, sim_s_id, max_case_time = 0;
 
 	init_parameters(argc, argv, solution_id, runner_id);
+
+	if(DEBUG)
+		printf("DEBUG MODE~!\n");
 
 	init_mysql_conf();
 
@@ -2313,9 +2323,18 @@ int main(int argc, char** argv) {
 
 	if (DEBUG)
 		printf("time: %d mem: %d\n", time_lmt, mem_lmt);
-	
+
+	if(isspj){
+		printf("===========================BEGIN COMPILE SPECIAL JUDGE ==================\n");
+		const char * cmd4 =
+							"g++ -o %s/data/%d/spj %s/data/%d/spj.cc";
+							printf(cmd4, oj_home, p_id, oj_home, p_id);
+							printf("\n");
+					execute_cmd(cmd4, oj_home, p_id, oj_home, p_id);
+	}
+
 	if(DEBUG)
-		printf("===========================Complile Begin==============================\n");
+		printf("===========================BEGIN COMPILE USER CODE =====================\n");
 	// compile
 	//      printf("%s\n",cmd);
 	// set the result to compiling
@@ -2337,6 +2356,8 @@ int main(int argc, char** argv) {
 		umount(work_dir);
 	}
 
+
+
 	if(DEBUG)
 		printf("===========================Complile End==============================\n");
 	//exit(0);
@@ -2354,7 +2375,6 @@ int main(int argc, char** argv) {
 	if (p_id > 0 && http_judge)
 		get_test_file(work_dir, p_id);
 	if (p_id > 0 && (dp = opendir(fullpath)) == NULL) {
-
 		write_log("No such dir:%s!\n", fullpath);
 		if (!http_judge)
 			mysql_close(conn);
@@ -2390,6 +2410,11 @@ int main(int argc, char** argv) {
 	if (lang == 16)
 		copy_js_runtime(work_dir);
 
+	if(DEBUG){
+		printf("\n\nWORK DIR IS %s\n", work_dir);
+		execute_cmd("pwd");
+		printf( "\n");
+	}
 	if(DEBUG)
 		printf("===========================Begin Run==============================\n");
 	// read files and run
@@ -2398,7 +2423,7 @@ int main(int argc, char** argv) {
 	double pass_rate = 0.0;
 	int num_of_test = 0;
 	int finalACflg = ACflg;
-
+	double score = 0;
 
 	if (p_id == 0) {  //custom input running
 		printf("running a custom input...\n");
@@ -2457,7 +2482,7 @@ int main(int argc, char** argv) {
 					solution_id, lang, topmemory, mem_lmt, usedtime, time_lmt,
 					p_id, PEflg, work_dir);
 
-			judge_solution(ACflg, usedtime, time_lmt, isspj, p_id, infile,
+			score += judge_solution(ACflg, usedtime, time_lmt, isspj, p_id, infile,
 					outfile, userfile, PEflg, lang, work_dir, topmemory,
 					mem_lmt, solution_id, num_of_test);
 
@@ -2469,9 +2494,6 @@ int main(int argc, char** argv) {
 			//clean_session(pidApp);
 		}
 		if (oi_mode) {
-			if (ACflg == OJ_AC) {
-				++pass_rate;
-			}
 			if (finalACflg < ACflg) {
 				finalACflg = ACflg;
 			}
@@ -2509,7 +2531,9 @@ int main(int argc, char** argv) {
 
 	if (oi_mode) {
 		if (num_of_test > 0)
-			pass_rate /= num_of_test;
+			pass_rate = score / num_of_test / 100;
+		if(DEBUG)
+			printf("finalACflg = %d\n",finalACflg);
 		update_solution(solution_id, finalACflg, usedtime, topmemory >> 10, sim,
 				sim_s_id, pass_rate);
 	} else {
